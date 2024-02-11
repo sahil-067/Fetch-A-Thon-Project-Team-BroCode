@@ -1,0 +1,41 @@
+import pandas as pd
+import mysql.connector
+
+# MySQL database configuration
+db_config = {
+    'host': 'localhost',
+    'user': 'root',
+    'password': 'sahil9087',
+    'database': 'testing'
+}
+
+# SQL query to retrieve data from your table
+query = 'SELECT * FROM user'
+
+try:
+    # Connect to MySQL database
+    connection = mysql.connector.connect(**db_config)
+
+    # Execute the query and fetch the result
+    cursor = connection.cursor()
+    cursor.execute(query)
+    result = cursor.fetchall()
+
+    # Get column names from the cursor description
+    columns = [desc[0] for desc in cursor.description]
+
+    # Create a Pandas DataFrame
+    df = pd.DataFrame(result, columns=columns)
+
+    # Display the DataFrame
+    print(df)
+
+except mysql.connector.Error as err:
+    print(f"Error: {err}")
+
+finally:
+    # Close the cursor and connection
+    if 'cursor' in locals() and cursor:
+        cursor.close()
+    if 'connection' in locals() and connection.is_connected():
+        connection.close()
